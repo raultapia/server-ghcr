@@ -1,0 +1,22 @@
+name: Build package
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - run: |
+          docker build --tag ghcr.io/raultapia/server-ghcr:latest .
+          docker push ghcr.io/raultapia/server-ghcr:latest
